@@ -12,7 +12,7 @@ ViewFactory& ViewFactory::Get() {
     return factory;
 }
 
-bool ViewFactory::Init(IMainFrame* frame, CCustomTabView& tabs) {
+bool ViewFactory::Init(IMainFrame* frame, CNativeCustomTabView& tabs) {
     m_pFrame = frame;
     m_tabs = &tabs;
     UINT icons[] = {

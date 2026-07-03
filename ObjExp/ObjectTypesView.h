@@ -40,6 +40,7 @@ public:
 		COMMAND_ID_HANDLER(ID_TYPESLIST_ALLOBJECTS, OnShowAllObjects)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(::RegisterWindowMessage(L"WTLHelperUpdateTheme"), OnUpdateTheme)
+		MESSAGE_HANDLER(WM_UPDATE_DARKMODE, OnUpdateTheme)
 		CHAIN_MSG_MAP(CTimerManager<CObjectTypesView>)
 		CHAIN_MSG_MAP(CCustomDraw<CObjectTypesView>)
 		CHAIN_MSG_MAP(CViewBase<CObjectTypesView>)

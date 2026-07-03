@@ -8,7 +8,7 @@
 #include "ImageIconCache.h"
 #include "ClipboardHelper.h"
 #include "ObjectHelpers.h"
-#include <ThemeHelper.h>
+#include <WTLHelper.h>
 #include <fstream>
 
 CString CZombieProcessesView::GetTitle() const {
@@ -124,7 +124,7 @@ void CZombieProcessesView::RefreshProcesses() {
 			::CloseHandle(hDup);
 	}
 	Sort(m_List);
-	m_List.SetItemCountEx((int)m_Items.size(), LVSICF_NOSCROLL | LVSICF_NOINVALIDATEALL);
+	m_List.SetItemCountEx((int)m_Items.size(), LVSICF_NOSCROLL);
 }
 
 void CZombieProcessesView::RefreshThreads() {
@@ -168,7 +168,7 @@ void CZombieProcessesView::RefreshThreads() {
 			::CloseHandle(hDup);
 	}
 	Sort(m_List);
-	m_List.SetItemCountEx((int)m_Items.size(), LVSICF_NOSCROLL | LVSICF_NOINVALIDATEALL);
+	m_List.SetItemCountEx((int)m_Items.size(), LVSICF_NOSCROLL);
 	if(IsActive())
 		GetFrame()->SetStatusText(7, std::format(L"Zombie Threads: {}", m_Items.size()).c_str());
 }
@@ -251,9 +251,9 @@ LRESULT CZombieProcessesView::OnSave(WORD, WORD, HWND, BOOL&) const {
 	CSimpleFileDialog dlg(TRUE, L"csv", L"ZombieProcesses", 
 		OFN_EXPLORER | OFN_ENABLESIZING | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY,
 		L"CSV Files (*.csv)\0*.csv\0All Files\0*.*\0", m_hWnd);
-	ThemeHelper::Suspend();
+	WTLHelper::SuspendHook();
 	auto save = dlg.DoModal() == IDOK;
-	ThemeHelper::Resume();
+	WTLHelper::ResumeHook();
 	if (save) {
 		auto text = ListViewHelper::GetAllRowsAsString(m_List, L",", L"\n");
 		std::wofstream stm(dlg.m_szFileName);

@@ -4,16 +4,14 @@
 
 #pragma once
 
-#include "OwnerDrawnMenu.h"
 #include "Interfaces.h"
-#include "CustomTabView.h"
-#include <Theme.h>
+#include <NativeCustomTabView.h>
+#include <WTLHelper.h>
 #include "SymbolManager.h"
 
 class CMainFrame :
 	public CFrameWindowImpl<CMainFrame>,
 	public CAutoUpdateUI<CMainFrame>,
-	public COwnerDrawnMenu<CMainFrame>,
 	public IMainFrame,
 	public CMessageFilter,
 	public CIdleHandler {
@@ -49,14 +47,13 @@ protected:
 		COMMAND_RANGE_HANDLER(ID_WINDOW_TABFIRST, ID_WINDOW_TABLAST, OnWindowActivate)
 		COMMAND_ID_HANDLER(ID_HELP_ABOUTWINDOWS, OnAboutWindows)
 		COMMAND_ID_HANDLER(ID_OPTIONS_ALWAYSONTOP, OnAlwaysOnTop)
-		COMMAND_ID_HANDLER(ID_OPTIONS_DARKMODE, OnDarkMode)
+		COMMAND_ID_HANDLER(ID_OPTIONS_DARKMODE, OnToggleDarkMode)
+		MESSAGE_HANDLER(WM_UPDATE_DARKMODE, OnUpdateDarkMode)
 		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
 		MESSAGE_HANDLER(WM_MENUSELECT, OnMenuSelect)
-		MESSAGE_HANDLER(WM_WINDOW_MENU_BUILT, OnMenuBuilt)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		CHAIN_MSG_MAP(CAutoUpdateUI<CMainFrame>)
-		CHAIN_MSG_MAP(COwnerDrawnMenu<CMainFrame>)
 		CHAIN_MSG_MAP(CFrameWindowImpl<CMainFrame>)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
@@ -70,10 +67,8 @@ private:
 	void SetStatusText(int index, PCWSTR text) override;
 
 	void ActivatePage(int page);
-	void InitMenu();
+	void InitMenu(HMENU hMenu);
 	void SetAlwaysOnTop(bool alwaysOnTop);
-	void InitDarkTheme();
-	void SetDarkMode(bool dark);
 
 	// Handler prototypes (uncomment arguments if needed):
 	//	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -101,12 +96,11 @@ private:
 	LRESULT OnZombieThreads(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnAboutWindows(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnAlwaysOnTop(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnDarkMode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnUpdateDarkMode(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnToggleDarkMode(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnMenuSelect(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnMenuBuilt(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 
-	CCustomTabView m_view;
+	CNativeCustomTabView m_view;
 	CMultiPaneStatusBarCtrl m_StatusBar;
 	int m_CurrentPage{ -1 };
-	Theme m_DefaultTheme{ true }, m_DarkTheme;
 };

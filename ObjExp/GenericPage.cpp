@@ -5,7 +5,7 @@
 #include "ObjectHelpers.h"
 #include "ObjectManager.h"
 #include "NtDll.h"
-#include <ThemeHelper.h>
+#include <WTLHelper.h>
 
 DWORD CGenericPage::GetHandleCount() const {
 	return m_HandleCount;
@@ -82,9 +82,9 @@ LRESULT CGenericPage::OnDialogColor(UINT, WPARAM, LPARAM, BOOL&) {
 
 LRESULT CGenericPage::OnEditSecurity(WORD, WORD, HWND, BOOL&) {
 	SecurityInfo si(m_hObject, m_Name);
-	ThemeHelper::Suspend();
+	WTLHelper::SuspendHook();
 	::EditSecurity(m_hWnd, &si);
-	ThemeHelper::Resume();
+	WTLHelper::ResumeHook();
 
 	return 0;
 }

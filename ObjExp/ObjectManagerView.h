@@ -1,13 +1,13 @@
 #pragma once
 
-#include "VirtualListView.h"
+#include <VirtualListView.h>
 #include "Interfaces.h"
 #include "resource.h"
 #include "ViewBase.h"
 #include "ObjectManager.h"
-#include "TreeViewHelper.h"
-#include "QuickFindEdit.h"
-#include "SortedFilteredVector.h"
+#include <TreeViewHelper.h>
+#include <QuickFindEdit.h>
+#include <SortedFilteredVector.h>
 #include <CustomSplitterWindow.h>
 
 class CObjectManagerView :

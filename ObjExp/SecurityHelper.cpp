@@ -23,22 +23,23 @@ bool SecurityHelper::IsRunningElevated() {
 
 bool SecurityHelper::RunElevated(PCWSTR param, bool ui) {
 	WCHAR path[MAX_PATH];
-	::GetModuleFileName(nullptr, path, _countof(path));
+	::GetModuleFileName(nullptr, path, std::size(path));
 	SHELLEXECUTEINFO shi = { sizeof(shi) };
 	shi.lpFile = path;
 	shi.nShow = SW_SHOWDEFAULT;
 	shi.lpVerb = L"runas";
 	shi.lpParameters = param;
 	shi.fMask = (ui ? 0 : (SEE_MASK_FLAG_NO_UI | SEE_MASK_NO_CONSOLE)) | SEE_MASK_NOASYNC | SEE_MASK_NOCLOSEPROCESS;
-	auto ok = ::ShellExecuteEx(&shi);
-	if (!ok)
+	if(!::ShellExecuteEx(&shi))
 		return false;
 
 	DWORD rc = WAIT_OBJECT_0;
-	if (!ui) {
-		rc = ::WaitForSingleObject(shi.hProcess, 5000);
+	if (shi.hProcess) {
+		if (!ui) {
+			rc = ::WaitForSingleObject(shi.hProcess, 5000);
+		}
+		::CloseHandle(shi.hProcess);
 	}
-	::CloseHandle(shi.hProcess);
 	return rc == WAIT_OBJECT_0;
 }
 
@@ -51,10 +52,8 @@ bool SecurityHelper::EnablePrivilege(PCWSTR privName, bool enable) {
 	TOKEN_PRIVILEGES tp;
 	tp.PrivilegeCount = 1;
 	tp.Privileges[0].Attributes = enable ? SE_PRIVILEGE_ENABLED : 0;
-	if (::LookupPrivilegeValue(nullptr, privName,
-		&tp.Privileges[0].Luid)) {
-		if (::AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp),
-			nullptr, nullptr))
+	if (::LookupPrivilegeValue(nullptr, privName, &tp.Privileges[0].Luid) && 
+		::AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp),	nullptr, nullptr)) {
 			result = ::GetLastError() == ERROR_SUCCESS;
 	}
 	::CloseHandle(hToken);

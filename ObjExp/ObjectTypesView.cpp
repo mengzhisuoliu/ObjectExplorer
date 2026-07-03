@@ -12,8 +12,7 @@
 #include "ObjectHelpers.h"
 #include "ViewFactory.h"
 #include "AccessMaskDecoder.h"
-#include <ThemeHelper.h>
-#include <Theme.h>
+#include <WTLHelper.h>
 
 BOOL CObjectTypesView::PreTranslateMessage(MSG* pMsg) {
 	pMsg;
@@ -142,7 +141,7 @@ LRESULT CObjectTypesView::OnShowAllObjects(WORD, WORD, HWND, BOOL&) {
 }
 
 LRESULT CObjectTypesView::OnUpdateTheme(UINT, WPARAM, LPARAM, BOOL&) {
-	auto dark = !ThemeHelper::GetCurrentTheme()->IsDefault();
+	auto dark = WTLHelper::IsDarkMode();
 	m_Green = dark ? RGB(0, 128, 0) : RGB(0, 255, 0);
 	m_Red = dark ? RGB(128, 0, 0) : RGB(255, 96, 0);
 
@@ -209,8 +208,7 @@ DWORD CObjectTypesView::OnSubItemPrePaint(int, LPNMCUSTOMDRAW cd) {
 	auto index = (int)cd->dwItemSpec;
 	auto item = m_Items[index];
 	auto& changes = m_mgr.GetChanges();
-	auto theme = ThemeHelper::GetCurrentTheme();
-	lcd->clrText = theme->TextColor;
+	lcd->clrText = ::GetSysColor(COLOR_WINDOWTEXT);
 
 	for (auto& change : changes) {
 		if (std::get<0>(change) == item && MapChangeToColumn(std::get<1>(change)) == col) {

@@ -5,7 +5,7 @@
 #include "resource.h"
 #include "MainFrm.h"
 #include "SecurityHelper.h"
-#include <ThemeHelper.h>
+#include <WTLHelper.h>
 #include "AppSettings.h"
 #include "DbgDriver.h"
 
@@ -40,13 +40,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lps
 
 	AtlInitCommonControls(ICC_BAR_CLASSES | ICC_COOL_CLASSES | ICC_LISTVIEW_CLASSES | ICC_TREEVIEW_CLASSES);
 
+	auto& settings = AppSettings::Get();
+	settings.LoadFromKey(L"SOFTWARE\\ScorpioSoftware\\ObjectExplorer");
+
 	hRes = _Module.Init(nullptr, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
 	if (SecurityHelper::IsRunningElevated()) {
 		DbgDriver::Get().Open();
 	}
-	ThemeHelper::Init();
+	WTLHelper::InitDarkMode(settings.DarkMode() ? DarkModeKind::Dark : DarkModeKind::Light);
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
 	_Module.Term();

@@ -224,9 +224,6 @@
     <ClInclude Include="StructurePage.h">
       <Filter>Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="TreeListView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SymbolManager.h">
       <Filter>Helpers</Filter>
     </ClInclude>
