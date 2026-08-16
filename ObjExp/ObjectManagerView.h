@@ -82,7 +82,7 @@ private:
 	void EnumDirectory(CTreeItem root, const CString& path);
 	void EnumAllObjects();
 	void EnumObjectsInDirectory(CString const path, SortedFilteredVector<ObjectData>& objects);
-	void ApplyFilter();
+	void ApplyFilter(PCWSTR filter);
 	void UpdateStatusText();
 
 	static bool CompareItems(const ObjectData& data1, const ObjectData& data2, int col, bool asc);

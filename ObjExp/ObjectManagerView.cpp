@@ -297,7 +297,7 @@ void CObjectManagerView::UpdateList(bool newNode) {
 			}
 		}
 	}
-	ApplyFilter();
+	ApplyFilter(m_FilterText);
 	if (newNode) {
 		m_List.SetItemCount(static_cast<int>(m_Objects.size()));
 		ClearSort();
@@ -425,18 +425,18 @@ LRESULT CObjectManagerView::OnJumpToTarget(WORD, WORD, HWND, BOOL&) {
 
 LRESULT CObjectManagerView::OnQuickTextChanged(WORD, WORD, HWND, BOOL&) {
 	m_QuickFind.GetWindowText(m_FilterText);
-	ApplyFilter();
+	ApplyFilter(m_FilterText);
 	m_List.SetItemCountEx((int)m_Objects.size(), LVSICF_NOSCROLL);
 	return 0;
 }
 
-void CObjectManagerView::ApplyFilter() {
-	if (m_FilterText.IsEmpty())
+void CObjectManagerView::ApplyFilter(PCWSTR filter) {
+	if (filter == nullptr || *filter == 0)
 		m_Objects.Filter(nullptr);
 	else {
-		CString text(m_FilterText);
+		CString text(filter);
 		text.MakeLower();
-		m_Objects.Filter([&](auto& item, auto) {
+		m_Objects.Filter([=](auto item, auto) {
 			CString search(item.Name);
 			search.MakeLower();
 			if (search.Find(text) >= 0)
